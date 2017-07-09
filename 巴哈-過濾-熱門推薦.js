@@ -1,8 +1,8 @@
-﻿// ==UserScript==
+// ==UserScript==
 // @name        過濾-熱門推薦
 // @namespace   過濾-熱門推薦
 // @include     https://forum.gamer.com.tw/*
-// @version     1.01
+// @version     1.02
 // @grant       none
 // ==/UserScript==
 
@@ -11,14 +11,19 @@
  * 
  * 說明：下面【本板熱門推薦】出現指定關鍵字的話，就過濾圖片
  * 作者：hbl917070（深海異音）
- * 最後修改日期：2017-6-27
+ * 最後修改日期：2017-07-10
  * 
  */
 
 
 
 //要排除的關鍵字（包含這些文字的文章及就看不到圖片
-var ar_out = new Array("寶", "寳", "宝", "polla", "月經", "戰象", "狂猴", "fbi", "吉娃", "瓦", "胡屠戶");
+var ar_out = new Array("寶", "寳", "宝", "polla", "月經", "戰象",
+                       "狂猴", "fbi", "吉娃", "胡屠戶","知名瑜伽老","台女必學！",
+                      "冰冰","夜深了 該來點好康犒賞大家","Lolita, light of",
+                      "7年級生歲月中","【女優x吃冰淇淋","感嘆現代年輕族群不注重",
+                      "夏日風情 素人正妹戴","夏日高溫難耐？",
+                      "灣新出道歌手","台灣版 瀧澤蘿拉");
 
 //被過濾的圖片會被替換成這個網址
 var s_img_url = "data:image/svg+xml;base64,PHN2ZyAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgMTA5Ljk1IDEwOS45NSI+PHN0eWxlPi5cMzcgOWMwYmEwY3tmaWxsOm5vbmU7c3Ryb2tlOiNlNjAwMTI7c3Ryb2tlLW1pdGVybGltaXQ6MTA7c3Ryb2tlLXdpZHRoOjRweDt9PC9zdHlsZT48bGluZSBjbGFzcz0iNzljMGJhMGMiIHgxPSIxLjQxIiB5MT0iMS40MSIgeDI9IjEwOC41NCIgeTI9IjEwOC41NCIvPjxsaW5lIGNsYXNzPSI3OWMwYmEwYyIgeDE9IjEuNDEiIHkxPSIxMDguNTQiIHgyPSIxMDguNTQiIHkyPSIxLjQxIi8+PC9zdmc+";
