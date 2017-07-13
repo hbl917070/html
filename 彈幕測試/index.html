@@ -1,0 +1,258 @@
+﻿<!DOCTYPE html>
+
+<!-- 
+
+    作者：hbl917070（深海異音）
+    小屋：https://home.gamer.com.tw/homeindex.php?owner=hbl917070
+
+    最後編輯：2017/07/14
+
+     -->
+
+<html lang="zh-tw">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+
+    <title>彈幕測試</title>
+
+    <style type="text/css">
+        html, body {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        html {
+            font-family: "微軟正黑體";
+            font-size: 20px;
+            background-color: rgb(199, 199, 199);
+        }
+
+        .div_center {
+            width: 1080px;
+            margin: auto;
+            background-color: rgb(255, 255, 255);
+            min-height: 100vh;
+            box-shadow: 0px 0px 20px rgba(0,0,0,0.25);
+        }
+
+        #div_01 {
+            background-color: rgba(0, 0, 0, 0.60);
+            width: 900px;
+            height: 600px;
+            border: 1px solid #000;
+            margin: 20px auto;
+            position: relative;
+            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: hidden;
+        }
+
+            #div_01 img {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+            }
+
+            #div_01 #can {
+                z-index: 555;
+                position: absolute;
+            }
+
+        .div_tt {
+            position: absolute;
+            font-family: 微軟正黑體;
+            font-size: 30px;
+            white-space: nowrap;
+            color: #fff;
+            /*display:none;*/
+        }
+
+        button {
+            background-color: rgb(0, 148, 255);
+            color: #FFF;
+            font-size: 24px;
+            font-family: 微軟正黑體;
+            border: none;
+            padding: 10px;
+        }
+
+            button:hover {
+                background-color: rgb(0, 112, 193);
+            }
+
+            button:active {
+                background-color: rgb(0, 193, 134);
+            }
+    </style>
+
+</head>
+<body>
+
+
+    <div class="div_center">
+        <div style="height:1px;"></div>
+
+        <div style="margin:10px;">
+            <h1>彈幕效能測試</h1>
+
+
+            <button id="but1" onclick="fun_can()"> 使用canvas繪製 </button>
+            <button id="but2" onclick="fun_div()"> 使用div繪製 </button>
+
+            <div>
+                <br>
+                說明：<br>
+                評估彈幕系統應該使用【canvas繪製】或直接【一則彈幕用一個DIV物件】。
+
+                <br>
+                啟動後觀察CPU的使用量與記憶體的消耗（google chrome開啟【工作管理員】的快速鍵為【shift + esc】）
+                <br><br>
+                補充：30毫秒刷新一次界面（33幀），彈幕數量100
+            </div>
+        </div>
+
+
+
+
+        <div id="div_01">
+
+            <img src="bac.jpg" />
+
+            <canvas id="can"></canvas>
+
+            <script>
+                //產生100個DIV物件
+                for (var i = 0; i < 100; i++) {
+                    document.write("<div class='div_tt' style='display:none;' id='div_t" + i + "'>彈幕(div)" + i + "</div>");
+                }
+            </script>
+
+        </div>
+
+
+
+
+        <script type="text/javascript">
+
+
+            var obj_div_output = document.getElementById("div_output");
+            var obj_can = document.getElementById("can");
+            var obj_div_01 = document.getElementById("div_01");
+            var ctx = obj_can.getContext("2d");
+
+
+            //初始化size
+            obj_can.width = obj_div_01.clientWidth;
+            obj_can.height = obj_div_01.clientHeight;
+
+
+            var int_x_偏差值 = 0;
+
+
+            ///
+            ///
+            ///
+            function fun_can() {
+                fun_text_canvas();
+                document.getElementById("but1").style.display = "none";
+                document.getElementById("but2").style.display = "none";
+            }
+
+
+            ///
+            ///
+            ///
+            function fun_div() {
+
+                for (var i = 0; i < 100; i++) {
+                    document.getElementById("div_t" + i).style.display = "block";
+                }
+                fun_text_div();
+                document.getElementById("but1").style.display = "none";
+                document.getElementById("but2").style.display = "none";
+            }
+
+
+            ///
+            ///使用canvas來繪製彈幕
+            ///
+            function fun_text_canvas() {
+
+                ctx.clearRect(0, 0, obj_can.width, obj_can.height);//清除上次的繪圖結果
+
+                var int_nub = 0;
+
+                int_x_偏差值 -= 5;
+
+                if (int_x_偏差值 <= -1500) {
+                    int_x_偏差值 += 1500;
+                }
+
+                for (var i = 0; i < 10; i++) {
+                    for (var j = 0; j < 10; j++) {
+
+                        var int_x = 250 * i + int_x_偏差值;
+                        var int_y = 30 + j * 30;
+                        ctx.font = "30px 微軟正黑體";
+                        ctx.fillStyle = "#FFF";
+                        ctx.fillText("彈幕(canvas)" + int_nub, int_x, int_y);
+                        int_nub++;
+                    }
+                }
+
+                setTimeout(function () {//30毫秒後重新執行
+                    fun_text_canvas();
+                }, 30);
+
+            }
+
+
+
+            ///
+            ///使用DIV來繪製彈幕
+            ///
+            function fun_text_div() {
+
+                var int_nub = 0;
+
+                int_x_偏差值 -= 5;
+
+                if (int_x_偏差值 <= -1500) {
+                    int_x_偏差值 += 1500;
+                }
+
+                for (var i = 0; i < 10; i++) {
+                    for (var j = 0; j < 10; j++) {
+
+                        var int_x = 250 * i + int_x_偏差值;
+                        var int_y = j * 30;
+
+                        var obj_t = document.getElementById("div_t" + int_nub);
+                        obj_t.style.left = int_x + "px";
+                        obj_t.style.top = int_y + "px";
+
+                        int_nub++;
+                    }
+                }
+
+                setTimeout(function () {//30毫秒後重新執行
+                    fun_text_div();
+                }, 30);
+
+            }
+
+
+
+
+        </script>
+
+
+
+
+        <div id="div_output"></div>
+        <div style="height:1px;"></div>
+
+    </div>
+</body>
+</html>
