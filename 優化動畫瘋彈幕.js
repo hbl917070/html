@@ -2,8 +2,10 @@
 // @name        優化動畫瘋彈幕
 // @namespace   優化動畫瘋彈幕
 // @include     https://ani.gamer.com.tw/animeVideo.php?sn=*
-// @version     1.0.0
+// @version     1.1.2
 // @grant       none
+// @description         作者：hbl91707（深海異音）
+// @description:zh-tw   作者：hbl91707（深海異音）
 // ==/UserScript==
 
 
@@ -16,7 +18,7 @@
 *   小屋：https://home.gamer.com.tw/homeindex.php?owner=hbl917070
 *   mail：hbl917070@gmail.com
 *   
-*   版本：1.1.0
+*   版本：1.1.2
 *   最後編輯：2017/07/15
 *   
 */
@@ -24,15 +26,17 @@
 
 //▼▼▼這裡的設定可以修改▼▼▼
 
-var int_刷新頻率 = 30;//預設每30毫秒刷新一次彈幕界面（相當於33幀
+var int_刷新頻率 = 30; //預設每30毫秒刷新一次彈幕界面（相當於33幀
 
-var s_文字字體 = "微軟正黑體";//文字的字體
+var int_彈幕陰影程度 = 4; //0~4。0=完全沒陰影、4=陰影全開（可能消耗一點點CPU運算）
 
-var bool_過濾單一符號的彈幕 = 1;//1=啟動、0=關閉。例如【%%%%%】、【！！！】、【噓噓噓】就會被過濾
+var s_文字字體 = "微軟正黑體"; //文字的字體
 
-var int_過濾過短的彈幕 = 1;//字數小於等於這個數字的彈幕就會被過濾。不想用的話就改成【0】
+var bool_過濾單一符號的彈幕 = 1; //1=啟動、0=關閉。例如【%%%%%】、【！！！】、【噓噓噓】就會被過濾
 
-var ar_filter = new Array();//過濾出現這些文字的彈幕，要新增就在下面多一行【ar_filter.push("你要的文字");】
+var int_過濾過短的彈幕 = 1; //字數小於等於這個數字的彈幕就會被過濾。不想用的話就改成【0】
+
+var ar_filter = new Array(); //過濾出現這些文字的彈幕，要新增就在下面多一行【ar_filter.push("你要的文字");】
 ar_filter.push("簽");
 ar_filter.push("劇透");
 ar_filter.push("猜");
@@ -162,7 +166,7 @@ function fun_div_to_canvas() {
                 continue;
         }
 
-        let cmt_t = ar_tt[i].innerHTML.replace("&gt;", ">").replace("&lt;", "<");//文字內容
+        let cmt_t = ar_tt[i].innerHTML.replace(/&gt;/g, ">").replace(/&lt;/g, "<");//文字內容
 
         if (bool_過濾單一符號的彈幕 > 0) {//過濾相同符號的留言（例如【！！！】、【%%%】
             if (fun_allSame(cmt_t)) {
@@ -197,8 +201,20 @@ function fun_div_to_canvas() {
 
         ctx.font = "bold " + cmt_fontSize + "px " + s_文字字體;
 
-        ctx.fillStyle = "#000000";//先繪製陰影
-        ctx.fillText(cmt_t, cmt_x + 1, cmt_y + 1);
+        ctx.fillStyle = "#000000";
+        if (int_彈幕陰影程度 >= 1) {
+            ctx.fillText(cmt_t, cmt_x + 1, cmt_y + 1);//先繪製陰影(右下)
+        }
+        if (int_彈幕陰影程度 >= 2) {
+            ctx.fillText(cmt_t, cmt_x - 1, cmt_y - 1);//先繪製陰影（左上）
+        }
+        if (int_彈幕陰影程度 >= 3) {
+            ctx.fillText(cmt_t, cmt_x + 1, cmt_y - 1);//先繪製陰影(右上)
+        }
+        if (int_彈幕陰影程度 >= 4) {
+            ctx.fillText(cmt_t, cmt_x - 1, cmt_y + 1);//先繪製陰影（左下）
+        }
+
 
         ctx.fillStyle = cmt_color;//繪製文字
         ctx.fillText(cmt_t, cmt_x, cmt_y);
