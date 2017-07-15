@@ -9,24 +9,40 @@
 
 /**
 *   
-*   說明：將動畫瘋的彈幕改由canvas繪製，藉此降低記憶體與CPU的使用量
+*   說明：1.將動畫瘋的彈幕改由canvas繪製，藉此降低記憶體與CPU的使用量
+*         2.可設定簡易的彈幕過濾條件
 *   
 *   作者：hbl917070（深海異音）
 *   小屋：https://home.gamer.com.tw/homeindex.php?owner=hbl917070
 *   mail：hbl917070@gmail.com
 *   
-*   版本：1.0.0
-*   最後編輯：2017/07/14
+*   版本：1.1.0
+*   最後編輯：2017/07/15
 *   
 */
 
 
-//---------------------------------
+//▼▼▼這裡的設定可以修改▼▼▼
 
-//這裡的設定可以修改
+var int_刷新頻率 = 30;//預設每30毫秒刷新一次彈幕界面（相當於33幀
 
-var s_文字字體 = "微軟正黑體";
-var int_刷新頻率 = 30;//預設每30毫秒刷新一次彈幕界面
+var s_文字字體 = "微軟正黑體";//文字的字體
+
+var bool_過濾單一符號的彈幕 = 1;//1=啟動、0=關閉。例如【%%%%%】、【！！！】、【噓噓噓】就會被過濾
+
+var int_過濾過短的彈幕 = 1;//字數小於等於這個數字的彈幕就會被過濾。不想用的話就改成【0】
+
+var ar_filter = new Array();//過濾出現這些文字的彈幕，要新增就在下面多一行【ar_filter.push("你要的文字");】
+ar_filter.push("簽");
+ar_filter.push("劇透");
+ar_filter.push("猜");
+ar_filter.push("檢舉");
+ar_filter.push("朝聖");
+ar_filter.push("每日");
+ar_filter.push("刷");
+
+//▲▲▲這裡的設定可以修改▲▲▲
+
 
 
 //----------------------------------
@@ -36,6 +52,22 @@ var ctx;
 
 fun_creat_canvas();
 
+
+///
+///判斷字串是否每一個字都相同
+///
+function fun_allSame(str) {
+    if (str.length <= 1) {
+        return false;
+    }
+    let ar_str = str.split("");//切割字串
+    for (let i = 1; i < ar_str.length; i++) {
+        if (ar_str[i] != ar_str[0]) {
+            return false;
+        }
+    }
+    return true;
+}
 
 
 ///
@@ -117,39 +149,59 @@ function fun_div_to_canvas() {
 
     ctx.clearRect(0, 0, obj_can.width, obj_can.height);//清除上次的繪圖結果
 
-    var ar_tt = document.getElementsByClassName("cmt");//取得所有彈幕
+    let ar_tt = document.getElementsByClassName("cmt");//取得所有彈幕
 
-    for (var i = 0; i < ar_tt.length; i++) {
+    for (let i = 0; i < ar_tt.length; i++) {
         //document.getElementById().getAttribute("style")
 
         ar_tt[i].className = "cmt_none cmt";//隱藏
+
 
         if (ar_tt[i].getAttribute("style").indexOf("opacity") > -1) {//如果opacity是0，就是在動畫瘋屬於隱藏的彈幕
             if (Number(ar_tt[i].style.opacity) === 0)
                 continue;
         }
 
-        var cmt_t = ar_tt[i].innerHTML.replace("&gt;", ">").replace("&lt;", "<");//文字內容
-        var cmt_color = ar_tt[i].style.color;//文字顏色      
-        var cmt_fontSize = Number(ar_tt[i].style.fontSize.replace("px", ""));//文字size
-        var cmt_x = Number(ar_tt[i].style.left.replace("px", ""));//left
+        let cmt_t = ar_tt[i].innerHTML.replace("&gt;", ">").replace("&lt;", "<");//文字內容
 
-        var cmt_y = 0;//top
+        if (bool_過濾單一符號的彈幕 > 0) {//過濾相同符號的留言（例如【！！！】、【%%%】
+            if (fun_allSame(cmt_t)) {
+                ar_tt[i].style.opacity = "0";
+                continue;
+            }
+        }
+
+        if (cmt_t.length <= int_過濾過短的彈幕) {//彈幕小於等於這個長度就會被過濾
+            ar_tt[i].style.opacity = "0";
+            continue;
+        }
+
+        for (let j = 0; j < ar_filter.length; j++) {//過濾包含特定關鍵字的彈幕
+            if (cmt_t.indexOf(ar_filter[j]) > -1) {
+                ar_tt[i].style.opacity = "0";
+                break;
+            }
+        }
+
+        let cmt_color = ar_tt[i].style.color;//文字顏色      
+        let cmt_fontSize = Number(ar_tt[i].style.fontSize.replace("px", ""));//文字size
+        let cmt_x = Number(ar_tt[i].style.left.replace("px", ""));//left
+
+        let cmt_y = 0;//top
         if (ar_tt[i].style.bottom.length > 1) {//【朝下】
-            var cmt_bottom = Number(ar_tt[i].style.bottom.replace("px", ""));
+            let cmt_bottom = Number(ar_tt[i].style.bottom.replace("px", ""));
             cmt_y = obj_can.height - cmt_bottom - 5;
         } else {//【滾動】或【靠上】
             cmt_y = Number(ar_tt[i].style.top.replace("px", "")) + cmt_fontSize;
         }
 
         ctx.font = "bold " + cmt_fontSize + "px " + s_文字字體;
-    
+
         ctx.fillStyle = "#000000";//先繪製陰影
         ctx.fillText(cmt_t, cmt_x + 1, cmt_y + 1);
 
         ctx.fillStyle = cmt_color;//繪製文字
         ctx.fillText(cmt_t, cmt_x, cmt_y);
-
     }
 
 
