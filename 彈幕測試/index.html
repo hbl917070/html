@@ -1,12 +1,9 @@
 ﻿<!DOCTYPE html>
 
 <!-- 
-
     作者：hbl917070（深海異音）
     小屋：https://home.gamer.com.tw/homeindex.php?owner=hbl917070
-
     最後編輯：2017/07/14
-
      -->
 
 <html lang="zh-tw">
@@ -21,13 +18,11 @@
             margin: 0px;
             padding: 0px;
         }
-
         html {
             font-family: "微軟正黑體";
             font-size: 20px;
             background-color: rgb(199, 199, 199);
         }
-
         .div_center {
             width: 1080px;
             margin: auto;
@@ -35,7 +30,6 @@
             min-height: 100vh;
             box-shadow: 0px 0px 20px rgba(0,0,0,0.25);
         }
-
         #div_01 {
             background-color: rgba(0, 0, 0, 0.60);
             width: 900px;
@@ -47,18 +41,15 @@
             overflow-x: hidden;
             overflow-y: hidden;
         }
-
             #div_01 img {
                 width: 100%;
                 height: 100%;
                 position: absolute;
             }
-
             #div_01 #can {
                 z-index: 555;
                 position: absolute;
             }
-
         .div_tt {
             position: absolute;
             font-family: 微軟正黑體;
@@ -67,7 +58,6 @@
             color: #fff;
             /*display:none;*/
         }
-
         button {
             background-color: rgb(0, 148, 255);
             color: #FFF;
@@ -76,11 +66,9 @@
             border: none;
             padding: 10px;
         }
-
             button:hover {
                 background-color: rgb(0, 112, 193);
             }
-
             button:active {
                 background-color: rgb(0, 193, 134);
             }
@@ -134,22 +122,14 @@
 
 
         <script type="text/javascript">
-
-
             var obj_div_output = document.getElementById("div_output");
             var obj_can = document.getElementById("can");
             var obj_div_01 = document.getElementById("div_01");
             var ctx = obj_can.getContext("2d");
-
-
             //初始化size
             obj_can.width = obj_div_01.clientWidth;
             obj_can.height = obj_div_01.clientHeight;
-
-
             var int_x_偏差值 = 0;
-
-
             ///
             ///
             ///
@@ -158,13 +138,10 @@
                 document.getElementById("but1").style.display = "none";
                 document.getElementById("but2").style.display = "none";
             }
-
-
             ///
             ///
             ///
             function fun_div() {
-
                 for (var i = 0; i < 100; i++) {
                     document.getElementById("div_t" + i).style.display = "block";
                 }
@@ -172,26 +149,18 @@
                 document.getElementById("but1").style.display = "none";
                 document.getElementById("but2").style.display = "none";
             }
-
-
             ///
             ///使用canvas來繪製彈幕
             ///
             function fun_text_canvas() {
-
                 ctx.clearRect(0, 0, obj_can.width, obj_can.height);//清除上次的繪圖結果
-
                 var int_nub = 0;
-
                 int_x_偏差值 -= 5;
-
                 if (int_x_偏差值 <= -1500) {
                     int_x_偏差值 += 1500;
                 }
-
                 for (var i = 0; i < 10; i++) {
                     for (var j = 0; j < 10; j++) {
-
                         var int_x = 250 * i + int_x_偏差值;
                         var int_y = 30 + j * 30;
                         ctx.font = "30px 微軟正黑體";
@@ -200,51 +169,33 @@
                         int_nub++;
                     }
                 }
-
                 setTimeout(function () {//30毫秒後重新執行
                     fun_text_canvas();
                 }, 30);
-
             }
-
-
-
             ///
             ///使用DIV來繪製彈幕
             ///
             function fun_text_div() {
-
                 var int_nub = 0;
-
                 int_x_偏差值 -= 5;
-
                 if (int_x_偏差值 <= -1500) {
                     int_x_偏差值 += 1500;
                 }
-
                 for (var i = 0; i < 10; i++) {
                     for (var j = 0; j < 10; j++) {
-
                         var int_x = 250 * i + int_x_偏差值;
                         var int_y = j * 30;
-
                         var obj_t = document.getElementById("div_t" + int_nub);
                         obj_t.style.left = int_x + "px";
                         obj_t.style.top = int_y + "px";
-
                         int_nub++;
                     }
                 }
-
                 setTimeout(function () {//30毫秒後重新執行
                     fun_text_div();
                 }, 30);
-
             }
-
-
-
-
         </script>
 
 
